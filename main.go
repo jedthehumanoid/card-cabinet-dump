@@ -62,12 +62,12 @@ func main() {
 		boards,
 	}
 
-	err := ioutil.WriteFile("dump.json", []byte(ToJSON(data)+"\n"), 0644)
+	err := ioutil.WriteFile("data.json", []byte(ToJSON(data)+"\n"), 0644)
 	if err != nil {
 		panic(err)
 	}
 
-	err = ioutil.WriteFile("dump.js", []byte("data = "+ToJSON(data)+"\n"), 0644)
+	err = ioutil.WriteFile("data.js", []byte("data = "+ToJSON(data)+"\n"), 0644)
 	if err != nil {
 		panic(err)
 	}
