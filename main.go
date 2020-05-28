@@ -52,16 +52,32 @@ func main() {
 	cards := cardcabinet.ReadCards(files)
 	boards := cardcabinet.ReadBoards(files)
 
-	data := struct {
-		Config Config              `json:"config"`
-		Cards  []cardcabinet.Card  `json:"cards"`
-		Boards []cardcabinet.Board `json:"boards"`
-	}{
-		config,
-		cards,
-		boards,
+	data := map[string]interface{}{}
+	
+	data["config"] = config
+	//fmt.Println(boards)
+	retboards := []map[string]interface{}{}
+
+	//fmt.Println(cards)
+	
+	for _, b := range boards {
+		board := map[string]interface{}{}
+		//	fmt.Println(b.Name)
+		board["name"] = b.Name
+		//	fmt.Println(b.Cards(cards))
+		board["decks"] = []map[string]interface{}{}
+		for _, d := range b.Decks {
+			deck := map[string]interface{}{}
+			deck["name"] = d.Name
+			deck["cards"] = d.Get(b.Cards(cards))
+			board["decks"] = append(board["decks"].([]map[string]interface{}), deck)
+		}
+		retboards = append(retboards, board)
 	}
 
+	data["boards"] = retboards
+
+	
 	err := ioutil.WriteFile("data.json", []byte(ToJSON(data)+"\n"), 0644)
 	if err != nil {
 		panic(err)
